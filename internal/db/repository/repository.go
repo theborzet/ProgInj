@@ -21,6 +21,8 @@ type Repository interface {
 	GetAllClients() ([]*models.Client, error)
 	UpdateClient(id int, updated *models.Client) error
 	AddClient(client *models.Client) error
+	// SignInUser(client *models.Client) error
+	// LogInUser(client *models.Client) error
 }
 
 type SQLRepository struct {
@@ -162,7 +164,7 @@ func (r *SQLRepository) UpdateClient(id int, updated *models.Client) error {
 }
 
 func (r *SQLRepository) AddClient(client *models.Client) error {
-	query := "INSERT INTO client (username, password, access_level, books) VALUES ($1, $2, $3, $4)"
-	_, err := r.db.Exec(query, client.Username, client.Password, client.AccessLevel, client.Books)
+	query := "INSERT INTO client (username, password, emailm, access_level, books) VALUES ($1, $2, $3, $4, &5)"
+	_, err := r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel, client.Books)
 	return err
 }

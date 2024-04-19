@@ -124,18 +124,18 @@ func (r *SQLRepository) AddAuthor(author *models.Author) error {
 	return err
 }
 func (r *SQLRepository) GetClientID(id int) (*models.Client, error) {
-	query := "SELECT id, username, password, access_level, books FROM client WHERE id = $1"
+	query := "SELECT id, username, password,, email, access_level, books FROM client WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 
 	var client models.Client
-	if err := row.Scan(&client.ID, &client.Username, &client.Password, &client.AccessLevel, &client.Books); err != nil {
+	if err := row.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel, &client.Books); err != nil {
 		return nil, err
 	}
 	return &client, nil
 }
 
 func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
-	query := "SELECT id, username, password, access_level, books FROM client"
+	query := "SELECT id, username, password, email, access_level, books FROM client"
 	rows, err := r.db.Query(query)
 
 	if err != nil {
@@ -146,7 +146,7 @@ func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
 
 	for rows.Next() {
 		var client models.Client
-		if err := rows.Scan(&client.ID, &client.Username, &client.Password, &client.AccessLevel, &client.Books); err != nil {
+		if err := rows.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel, &client.Books); err != nil {
 			return nil, err
 		}
 		clients = append(clients, &client)
@@ -156,13 +156,13 @@ func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
 }
 
 func (r *SQLRepository) UpdateClient(id int, updated *models.Client) error {
-	query := "UPDATE client SET username = $1, password = $2, access_level = $3, books = $4 WHERE id = $5"
-	_, err := r.db.Exec(query, updated.Username, updated.Password, updated.AccessLevel, updated.Books, id)
+	query := "UPDATE client SET username = $1, password = $2, email = $3 access_level = $4, books = $5 WHERE id = $6"
+	_, err := r.db.Exec(query, updated.Username, updated.Password, updated.Email, updated.AccessLevel, updated.Books, id)
 	return err
 }
 
 func (r *SQLRepository) AddClient(client *models.Client) error {
-	query := "INSERT INTO client (username, password, access_level, books) VALUES ($1, $2, $3, $4)"
-	_, err := r.db.Exec(query, client.Username, client.Password, client.AccessLevel, client.Books)
+	query := "INSERT INTO client (username, password, email, access_level, books) VALUES ($1, $2, $3, $4, $5)"
+	_, err := r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel, client.Books)
 	return err
 }

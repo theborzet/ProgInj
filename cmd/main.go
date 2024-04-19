@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	// html "github.com/gofiber/template/html"
 	db "github.com/theborzet/library_project/internal/db/init"
 	"github.com/theborzet/library_project/internal/handlers"
 	"github.com/theborzet/library_project/pkg/config"
@@ -14,6 +15,7 @@ func main() {
 	if err != nil {
 		log.Println("Some problems with config", err)
 	}
+	// engine := html.New("./internal/views", ".html")
 	app := fiber.New()
 
 	db := db.Init(config)

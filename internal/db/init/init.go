@@ -27,13 +27,25 @@ func Init(c *config.Config) *sqlx.DB {
 
 func migrateDB(db *sqlx.DB) {
 	_, err := db.Exec(`
-		CREATE TABLE IF NOT EXISTS Author (
-			id SERIAL PRIMARY KEY,
-			first_name VARCHAR(100) NOT NULL,
-			last_name VARCHAR(100) NOT NULL,
-			birth_date DATE
-		)
-	`)
+        CREATE TABLE IF NOT EXISTS Author (
+            id SERIAL PRIMARY KEY,
+            first_name VARCHAR(100) NOT NULL,
+            last_name VARCHAR(100) NOT NULL,
+            birth_date DATE
+        )
+    `)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	_, err = db.Exec(`
+        CREATE TABLE IF NOT EXISTS Book (
+            id SERIAL PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            author_id INTEGER REFERENCES Author(id),
+            publication_year INT,
+            genre VARCHAR(100)
+        )
+    `)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -56,8 +68,8 @@ func migrateDB(db *sqlx.DB) {
             id SERIAL PRIMARY KEY,
             username VARCHAR(100) NOT NULL UNIQUE,
             password VARCHAR(100) NOT NULL,
-			email VARCHAR(100) NOT NULL, #добавление email
-            access_level INT,
+			email VARCHAR(100) NOT NULL,
+            access_level INT DEFAULT 1,
             books JSONB
         )
     `)

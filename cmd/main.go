@@ -1,20 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"sync"
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+	db "github.com/theborzet/library_project/internal/db/init"
+	"github.com/theborzet/library_project/internal/handlers"
+	"github.com/theborzet/library_project/pkg/config"
 )
 
 func main() {
-	var wg sync.WaitGroup
-
-	for i := 0; i < 10; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			fmt.Println(i)
-		}()
+	config, err := config.LoadConfig()
+	if err != nil {
+		log.Println("Some problems with config", err)
 	}
-	wg.Wait()
-	fmt.Println("all done")
+	app := fiber.New()
+
+	db := db.Init(config)
+	handlers.RegistrationRoutess(app, db)
+
+	app.Listen(config.Port)
 }

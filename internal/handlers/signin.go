@@ -5,7 +5,7 @@ import (
 	"github.com/theborzet/library_project/internal/db/models"
 )
 
-func (h Handler) SignInUser(c *fiber.Ctx) error {
+func (h Handler) SignUpUser(c *fiber.Ctx) error {
 	var user models.Client
 	if err := c.BodyParser(&user); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request payload"})

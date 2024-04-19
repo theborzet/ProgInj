@@ -21,8 +21,6 @@ type Repository interface {
 	GetAllClients() ([]*models.Client, error)
 	UpdateClient(id int, updated *models.Client) error
 	AddClient(client *models.Client) error
-	// SignInUser(client *models.Client) error
-	// LogInUser(client *models.Client) error
 }
 
 type SQLRepository struct {

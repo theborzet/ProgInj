@@ -18,9 +18,9 @@ func NewHandler(repo repository.Repository) *Handler {
 
 func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	handler := NewHandler(repository.NewSQLRepository(db))
-	// bookRoutes := app.Group("/books")
-	// bookRoutes.Post("/", handler.AddBook)
-	// bookRoutes.Delete("/:id", handler.DeleteProduct)
+	bookRoutes := app.Group("/books")
+	bookRoutes.Post("/", handler.AddBook)
+	bookRoutes.Delete("/:id", handler.DeleteBook)
 	// bookRoutes.Get("/", handler.GetAllProduct)
 	// bookRoutes.Get("/:id", handler.GetProduct)
 	// bookRoutes.Put("/:id", handler.UpdateProduct)

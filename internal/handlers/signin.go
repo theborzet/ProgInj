@@ -1,3 +1,5 @@
 package handlers
 
-// func (h Handler) LogInUser()
+func (h Handler) LogInUser() {
+
+}

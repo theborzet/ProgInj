@@ -1,4 +1,4 @@
-package handlersW
+package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -7,8 +7,8 @@ import (
 
 func (h Handler) SignUpUser(c *fiber.Ctx) error {
 
-	body := models.Client{}
-	if err := c.BodyParser(&body); err != nil {
+	var user models.Client
+	if err := c.BodyParser(&user); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 

@@ -1,4 +1,4 @@
-package handlersW
+package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -13,7 +13,7 @@ func (h Handler) SignUpUser(c *fiber.Ctx) error {
 	}
 
 	// Проверяем валидность данных пользователя
-	if user.Username == "" || user.Password == "" || user.Email == "" {
+	if body.Username == "" || body.Password == "" || body.Email == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Username, password and email are required"})
 	}
 
@@ -22,7 +22,7 @@ func (h Handler) SignUpUser(c *fiber.Ctx) error {
 	// Здесь может быть код для создания экземпляра структуры User из полученных данных
 
 	// Вызываем метод AddClient вашего репозитория
-	err := h.repo.AddClient(&user)
+	err := h.repo.AddClient(&body)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to register user"})
 	}

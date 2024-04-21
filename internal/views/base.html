@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -29,4 +29,24 @@
     <script src="{% static 'vendor/js/auth-admin.js' %}"></script>
 </body>
 
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <!-- Ваши стили CSS -->
+    <style>
+        /* Здесь можно добавить общие стили */
+    </style>
+</head>
+<body>
+    {{template "content" .}}
+    <!-- Здесь можно добавить общие скрипты JavaScript -->
+    <script>
+        // Ваш JavaScript
+    </script>
+</body>
 </html>

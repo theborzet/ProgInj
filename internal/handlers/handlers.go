@@ -2,22 +2,25 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
 	"github.com/jmoiron/sqlx"
 	"github.com/theborzet/library_project/internal/db/repository"
 )
 
 type Handler struct {
-	repo repository.Repository
+	repo   repository.Repository
+	engine *html.Engine
 }
 
-func NewHandler(repo repository.Repository) *Handler {
+func NewHandler(repo repository.Repository, engine *html.Engine) *Handler {
 	return &Handler{
-		repo: repo,
+		repo:   repo,
+		engine: engine,
 	}
 }
 
-func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
-	handler := NewHandler(repository.NewSQLRepository(db))
+func RegistrationRoutess(app *fiber.App, db *sqlx.DB, engine *html.Engine) {
+	handler := NewHandler(repository.NewSQLRepository(db), engine)
 	bookRoutes := app.Group("/books")
 	bookRoutes.Post("/", handler.AddBook)
 	bookRoutes.Delete("/:id", handler.DeleteBook)

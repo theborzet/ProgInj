@@ -9,7 +9,7 @@ func (h Handler) ViewAllBooks(c *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(fiber.StatusNotFound, err.Error())
 	}
-	return h.engine.Render(c, "1", fiber.Map{
+	return c.Render("1", fiber.Map{
 		"books": books,
 	})
 }

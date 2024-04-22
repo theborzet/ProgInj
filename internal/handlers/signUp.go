@@ -7,8 +7,8 @@ import (
 
 func (h Handler) SignUpUser(c *fiber.Ctx) error {
 
-	var user models.Client
-	if err := c.BodyParser(&user); err != nil {
+	var body models.Client
+	if err := c.BodyParser(&body); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 

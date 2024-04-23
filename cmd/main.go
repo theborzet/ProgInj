@@ -15,10 +15,12 @@ func main() {
 	if err != nil {
 		log.Println("Some problems with config", err)
 	}
-	engine := html.New("./internal/template", ".tmpl")
+	engine := html.New("./internal/templates", ".tmpl")
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
+	app.Static("/static", "./internal/static")
 
 	db := db.Init(config)
 	handlers.RegistrationRoutess(app, db)

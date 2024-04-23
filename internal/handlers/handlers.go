@@ -2,14 +2,12 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/template/html/v2"
 	"github.com/jmoiron/sqlx"
 	"github.com/theborzet/library_project/internal/db/repository"
 )
 
 type Handler struct {
-	repo   repository.Repository
-	engine *html.Engine
+	repo repository.Repository
 }
 
 func NewHandler(repo repository.Repository) *Handler {
@@ -18,8 +16,15 @@ func NewHandler(repo repository.Repository) *Handler {
 	}
 }
 
+func (h Handler) IndexView(c *fiber.Ctx) error {
+	return c.Render("index", fiber.Map{})
+}
+
 func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	handler := NewHandler(repository.NewSQLRepository(db))
+
+	app.Get("/", handler.IndexView)
+
 	bookRoutes := app.Group("/books")
 	bookRoutes.Post("/", handler.AddBook)
 	bookRoutes.Delete("/:id", handler.DeleteBook)

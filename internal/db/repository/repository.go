@@ -40,17 +40,17 @@ func (r *SQLRepository) DeleteRecord(tableName string, id int) error {
 }
 
 func (r *SQLRepository) GetBookID(id int) (*models.Book, error) {
-	query := "SELECT id, title, author_id, publication_year, genre FROM book WHERE id = $1"
+	query := "SELECT id, title, author_id, publication_year, genre, count, photo_url FROM book WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 
 	var book models.Book
-	if err := row.Scan(&book.ID, &book.Title, &book.AuthorID, &book.PublicationYear, &book.Genre); err != nil {
+	if err := row.Scan(&book.ID, &book.Title, &book.AuthorID, &book.PublicationYear, &book.Genre, &book.Count, &book.ImageUrl); err != nil {
 		return nil, err
 	}
 	return &book, nil
 }
 func (r *SQLRepository) GetAllBooks() ([]*models.Book, error) {
-	query := "SELECT id, title, author_id, publication_year, genre FROM book"
+	query := "SELECT id, title, author_id, publication_year, genre, count, photo_url FROM book"
 	rows, err := r.db.Query(query)
 
 	if err != nil {
@@ -61,7 +61,7 @@ func (r *SQLRepository) GetAllBooks() ([]*models.Book, error) {
 
 	for rows.Next() {
 		var book models.Book
-		if err := rows.Scan(&book.ID, &book.Title, &book.AuthorID, &book.PublicationYear, &book.Genre); err != nil {
+		if err := rows.Scan(&book.ID, &book.Title, &book.AuthorID, &book.PublicationYear, &book.Genre, &book.Count, &book.ImageUrl); err != nil {
 			return nil, err
 		}
 		books = append(books, &book)
@@ -71,14 +71,14 @@ func (r *SQLRepository) GetAllBooks() ([]*models.Book, error) {
 }
 
 func (r *SQLRepository) UpdateBook(id int, updated *models.Book) error {
-	query := "UPDATE book SET title = $1, author_id = $2, publication_year = $3, genre = $4 WHERE id = $5"
-	_, err := r.db.Exec(query, updated.Title, updated.AuthorID, updated.PublicationYear, updated.Genre, id)
+	query := "UPDATE book SET title = $1, author_id = $2, publication_year = $3, genre = $4, count = $5, photo_url = $6 WHERE id = $7"
+	_, err := r.db.Exec(query, updated.Title, updated.AuthorID, updated.PublicationYear, updated.Genre, updated.Count, updated.ImageUrl, id)
 	return err
 }
 
 func (r *SQLRepository) AddBook(book *models.Book) error {
-	query := "INSERT INTO book (title, author_id, publication_year, genre) VALUES ($1, $2, $3, $4)"
-	_, err := r.db.Exec(query, book.Title, book.AuthorID, book.PublicationYear, book.Genre)
+	query := "INSERT INTO book (title, author_id, publication_year, genre, count, photo_url) VALUES ($1, $2, $3, $4, $5, $6)"
+	_, err := r.db.Exec(query, book.Title, book.AuthorID, book.PublicationYear, book.Genre, book.Count, book.ImageUrl)
 	return err
 }
 func (r *SQLRepository) GetAuthorID(id int) (*models.Author, error) {

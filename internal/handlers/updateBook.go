@@ -22,6 +22,8 @@ func (h Handler) UpdateBook(c *fiber.Ctx) error {
 		AuthorID:        updatedBook.AuthorID,
 		PublicationYear: updatedBook.PublicationYear,
 		Genre:           updatedBook.Genre,
+		Count:           updatedBook.Count,
+		ImageUrl:        updatedBook.ImageUrl,
 	}
 
 	errchan := make(chan error)

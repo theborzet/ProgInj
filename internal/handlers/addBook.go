@@ -17,6 +17,8 @@ func (h Handler) AddBook(c *fiber.Ctx) error {
 		AuthorID:        body.AuthorID,
 		PublicationYear: body.PublicationYear,
 		Genre:           body.Genre,
+		Count:           body.Count,
+		ImageUrl:        body.ImageUrl,
 	}
 
 	errchan := make(chan error)

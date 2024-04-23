@@ -38,13 +38,15 @@ func migrateDB(db *sqlx.DB) {
 		log.Fatalln(err)
 	}
 	_, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS Book (
-            id SERIAL PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            author_id INTEGER REFERENCES Author(id),
-            publication_year INT,
-            genre VARCHAR(100)
-        )
+		CREATE TABLE IF NOT EXISTS Book (
+			id SERIAL PRIMARY KEY,
+			title VARCHAR(255) NOT NULL,
+			author_id INTEGER REFERENCES Author(id),
+			publication_year INT,
+			genre VARCHAR(100),
+			count INT,
+			photo_url VARCHAR(255) -- Поле для хранения URL-адреса фотографии книги
+		)
     `)
 	if err != nil {
 		log.Fatalln(err)

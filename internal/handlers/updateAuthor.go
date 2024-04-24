@@ -26,7 +26,7 @@ func (h Handler) UpdateAuthor(c *fiber.Ctx) error {
 	errchan := make(chan error)
 
 	go func() {
-		if err := h.repo.UpdateAuthor(updatedId, &author); err != nil {
+		if err := h.repo.UpdateAuthor(uint(updatedId), &author); err != nil {
 			errchan <- err
 		} else {
 			errchan <- nil

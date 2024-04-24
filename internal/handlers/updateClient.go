@@ -28,7 +28,7 @@ func (h Handler) UpdateClient(c *fiber.Ctx) error {
 	errchan := make(chan error)
 
 	go func() {
-		if err := h.repo.UpdateClient(updatedId, &client); err != nil {
+		if err := h.repo.UpdateClient(uint(updatedId), &client); err != nil {
 			errchan <- err
 		} else {
 			errchan <- nil

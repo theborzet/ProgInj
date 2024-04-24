@@ -1,4 +1,4 @@
-{{define "book_list"}}
+{{define "author_detail"}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,12 +7,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{{.Title}}</title>
+    <title>{{.Author.FirstName}} {{.Author.LastName}}</title>
     <!-- Bootstrap core CSS -->
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="/static/vendor/css/products.css" rel="stylesheet">
     {{block "css" .}} {{end}}
+    <style>
+        .book-card {
+            max-width: 250px;
+            margin: 0 auto;
+        }
+
+        .book-card img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 
 <body>
@@ -36,22 +47,42 @@
     <!-- Page Content -->
     <div class="container">
         <div class="row">
-            {{range .Books}}
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-lg-12">
                 <div class="card h-100">
-                    <a href="#">
-                        <img class="card-img-top" src="{{.ImageUrl}}" alt="">
-                    </a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="/books/{{.ID}}">{{.Title}}</a>
-                        </h4>
-                        <p><strong>Жанр:</strong> {{.Genre}}</p>
-                        <p><strong>Количество:</strong> {{.Count}}</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img class="card-img-top book-image" src="{{.Author.ImageUrl}}" alt="">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h4 class="card-title">{{.Author.FirstName}} {{.Author.LastName}}</h4>
+                                <p class="card-text"><strong>Имя:</strong> {{.Author.FirstName}}</p>
+                                <p class="card-text"><strong>Фамилия:</strong> {{.Author.LastName}}</p>                                
+                                <p class="card-text"><strong>Дата рождения:</strong> {{.Author.BirthDate.Format "2 января 2006 года"}}</p>
+                                <!-- Добавьте здесь другие поля, которые вы хотите отображать для автора -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            {{end}}
+        </div>
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <h5>Книги автора:</h5>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {{range .Books}}
+                    <div class="col">
+                        <div class="card h-100 book-card">
+                            <img src="{{.ImageUrl}}" class="card-img-top" alt="{{.Title}}">
+                            <div class="card-body">
+                                <h5 class="card-title"><a href="/books/{{.ID}}">{{.Title}}</a></h5>
+                                <p class="card-text">{{.Genre}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
         </div>
         <!-- Pagination -->
         {{if .IsPaginated}}
@@ -80,7 +111,6 @@
             </ul>
         </nav>
         {{end}}
-
     </div>
     <!-- /.container -->
     <!-- Bootstrap core JavaScript -->

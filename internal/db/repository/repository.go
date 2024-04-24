@@ -8,19 +8,20 @@ import (
 )
 
 type Repository interface {
-	DeleteRecord(tableName string, id int) error
-	GetBookID(id int) (*models.Book, error)
+	DeleteRecord(tableName string, id uint) error
+	GetBookID(id uint) (*models.Book, error)
 	GetAllBooks() ([]*models.Book, error)
-	UpdateBook(id int, updated *models.Book) error
+	UpdateBook(id uint, updated *models.Book) error
 	AddBook(book *models.Book) error
-	GetAuthorID(id int) (*models.Author, error)
+	GetAuthorID(id uint) (*models.Author, error)
 	GetAllAuthors() ([]*models.Author, error)
-	UpdateAuthor(id int, updated *models.Author) error
+	UpdateAuthor(id uint, updated *models.Author) error
 	AddAuthor(author *models.Author) error
-	GetClientID(id int) (*models.Client, error)
+	GetClientID(id uint) (*models.Client, error)
 	GetAllClients() ([]*models.Client, error)
-	UpdateClient(id int, updated *models.Client) error
+	UpdateClient(id uint, updated *models.Client) error
 	AddClient(client *models.Client) error
+	GetAuthorBooks(author_id uint) ([]*models.Book, error)
 }
 
 type SQLRepository struct {
@@ -33,13 +34,13 @@ func NewSQLRepository(db *sqlx.DB) *SQLRepository {
 	}
 }
 
-func (r *SQLRepository) DeleteRecord(tableName string, id int) error {
+func (r *SQLRepository) DeleteRecord(tableName string, id uint) error {
 	query := fmt.Sprintf("DELETE FROM %s WHERE id = $1", tableName)
 	_, err := r.db.Exec(query, id)
 	return err
 }
 
-func (r *SQLRepository) GetBookID(id int) (*models.Book, error) {
+func (r *SQLRepository) GetBookID(id uint) (*models.Book, error) {
 	query := "SELECT id, title, author_id, publication_year, genre, count, photo_url FROM book WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 
@@ -70,7 +71,7 @@ func (r *SQLRepository) GetAllBooks() ([]*models.Book, error) {
 	return books, nil
 }
 
-func (r *SQLRepository) UpdateBook(id int, updated *models.Book) error {
+func (r *SQLRepository) UpdateBook(id uint, updated *models.Book) error {
 	query := "UPDATE book SET title = $1, author_id = $2, publication_year = $3, genre = $4, count = $5, photo_url = $6 WHERE id = $7"
 	_, err := r.db.Exec(query, updated.Title, updated.AuthorID, updated.PublicationYear, updated.Genre, updated.Count, updated.ImageUrl, id)
 	return err
@@ -81,18 +82,18 @@ func (r *SQLRepository) AddBook(book *models.Book) error {
 	_, err := r.db.Exec(query, book.Title, book.AuthorID, book.PublicationYear, book.Genre, book.Count, book.ImageUrl)
 	return err
 }
-func (r *SQLRepository) GetAuthorID(id int) (*models.Author, error) {
-	query := "SELECT id, first_name, last_name, birth_date FROM author WHERE id = $1"
+func (r *SQLRepository) GetAuthorID(id uint) (*models.Author, error) {
+	query := "SELECT id, first_name, last_name, birth_date, photo_url FROM author WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 
 	var author models.Author
-	if err := row.Scan(&author.ID, &author.FirstName, &author.LastName, &author.BirthDate); err != nil {
+	if err := row.Scan(&author.ID, &author.FirstName, &author.LastName, &author.BirthDate, &author.ImageUrl); err != nil {
 		return nil, err
 	}
 	return &author, nil
 }
 func (r *SQLRepository) GetAllAuthors() ([]*models.Author, error) {
-	query := "SELECT id, first_name, last_name, birth_date FROM author"
+	query := "SELECT id, first_name, last_name, birth_date, photo_url FROM author"
 	rows, err := r.db.Query(query)
 
 	if err != nil {
@@ -103,7 +104,7 @@ func (r *SQLRepository) GetAllAuthors() ([]*models.Author, error) {
 
 	for rows.Next() {
 		var author models.Author
-		if err := rows.Scan(&author.ID, &author.FirstName, &author.LastName, &author.BirthDate); err != nil {
+		if err := rows.Scan(&author.ID, &author.FirstName, &author.LastName, &author.BirthDate, &author.ImageUrl); err != nil {
 			return nil, err
 		}
 		authors = append(authors, &author)
@@ -112,19 +113,41 @@ func (r *SQLRepository) GetAllAuthors() ([]*models.Author, error) {
 	return authors, nil
 }
 
-func (r *SQLRepository) UpdateAuthor(id int, updated *models.Author) error {
-	query := "UPDATE author SET first_name = $1, last_name = $2, birth_date = $3 WHERE id = $4"
-	_, err := r.db.Exec(query, updated.FirstName, updated.LastName, updated.BirthDate, id)
+func (r *SQLRepository) UpdateAuthor(id uint, updated *models.Author) error {
+	query := "UPDATE author SET first_name = $1, last_name = $2, birth_date = $3, photo_url = $4 WHERE id = $5"
+	_, err := r.db.Exec(query, updated.FirstName, updated.LastName, updated.BirthDate, updated.ImageUrl, id)
 	return err
 }
 
 func (r *SQLRepository) AddAuthor(author *models.Author) error {
-	query := "INSERT INTO author (first_name, last_name, birth_date) VALUES ($1, $2, $3)"
-	_, err := r.db.Exec(query, author.FirstName, author.LastName, author.BirthDate)
+	query := "INSERT INTO author (first_name, last_name, birth_date, photo_url) VALUES ($1, $2, $3, $4)"
+	_, err := r.db.Exec(query, author.FirstName, author.LastName, author.BirthDate, author.ImageUrl)
 	return err
 }
-func (r *SQLRepository) GetClientID(id int) (*models.Client, error) {
-	query := "SELECT id, username, password,, email, access_level, books FROM client WHERE id = $1"
+
+func (r *SQLRepository) GetAuthorBooks(author_id uint) ([]*models.Book, error) {
+	query := "SELECT id, title, author_id, publication_year, genre, count, photo_url FROM book WHERE author_id=$1"
+	rows, err := r.db.Query(query, author_id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var books []*models.Book
+
+	for rows.Next() {
+		var book models.Book
+		if err := rows.Scan(&book.ID, &book.Title, &book.AuthorID, &book.PublicationYear, &book.Genre, &book.Count, &book.ImageUrl); err != nil {
+			return nil, err
+		}
+		books = append(books, &book)
+	}
+
+	return books, nil
+}
+
+func (r *SQLRepository) GetClientID(id uint) (*models.Client, error) {
+	query := "SELECT id, username, password,, email, access_level FROM client WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 
 	var client models.Client
@@ -155,7 +178,7 @@ func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
 	return clients, nil
 }
 
-func (r *SQLRepository) UpdateClient(id int, updated *models.Client) error {
+func (r *SQLRepository) UpdateClient(id uint, updated *models.Client) error {
 	query := "UPDATE client SET username = $1, password = $2, email = $3 access_level = $4, books = $5 WHERE id = $6"
 	_, err := r.db.Exec(query, updated.Username, updated.Password, updated.Email, updated.AccessLevel, updated.Books, id)
 	return err

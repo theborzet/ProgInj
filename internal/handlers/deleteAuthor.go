@@ -14,7 +14,7 @@ func (h Handler) DeleteAuthor(c *fiber.Ctx) error {
 	}
 	errchan := make(chan error)
 	go func() {
-		if err := h.repo.DeleteRecord("author", authorID); err != nil {
+		if err := h.repo.DeleteRecord("author", uint(authorID)); err != nil {
 			errchan <- err
 		} else {
 			errchan <- nil

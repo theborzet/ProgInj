@@ -1,4 +1,4 @@
-{{define "book_list"}}
+{{define "book_detail"}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,6 +13,13 @@
     <!-- Custom styles for this template -->
     <link href="/static/vendor/css/products.css" rel="stylesheet">
     {{block "css" .}} {{end}}
+    <style>
+        .book-image {
+            width: 200px; /* Установите желаемую ширину изображения */
+            height: auto; /* Автоматическое масштабирование высоты */
+            margin-right: 20px; /* Для отступа между изображением и текстом */
+        }
+    </style>
 </head>
 
 <body>
@@ -36,51 +43,26 @@
     <!-- Page Content -->
     <div class="container">
         <div class="row">
-            {{range .Books}}
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-lg-12">
                 <div class="card h-100">
-                    <a href="#">
-                        <img class="card-img-top" src="{{.ImageUrl}}" alt="">
-                    </a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="/books/{{.ID}}">{{.Title}}</a>
-                        </h4>
-                        <p><strong>Жанр:</strong> {{.Genre}}</p>
-                        <p><strong>Количество:</strong> {{.Count}}</p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img class="card-img-top book-image" src="{{.Book.ImageUrl}}" alt="">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h4 class="card-title">{{.Title}}</h4>
+                                <p class="card-text"><strong>Автор:</strong> <a href="/author/{{.Author.ID}}">{{.Author.FirstName}} {{.Author.LastName}}</a></p>
+                                <p class="card-text"><strong>Год публикации:</strong> {{.Book.PublicationYear}}</p>
+                                <p class="card-text"><strong>Жанр:</strong> {{.Book.Genre}}</p>
+                                <p class="card-text"><strong>Количество:</strong> {{.Book.Count}}</p>
+                                <!-- Добавьте здесь другие поля, которые вы хотите отображать для книги -->
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            {{end}}
         </div>
-        <!-- Pagination -->
-        {{if .IsPaginated}}
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item {{if not .HasPrevious}} disabled {{end}}">
-                    <a class="page-link"
-                        href="{{if .HasPrevious}} {{.Paginator.PreviousPageURL}} {{else}} # {{end}}"
-                        tabindex="-1" aria-disabled="true">
-                        Предыдущая
-                    </a>
-                </li>
-                {{range .Paginator.PageNumbers}}
-                <li class="page-item">
-                    <a class="page-link" href="{{.URL}}">
-                        {{.Number}}
-                    </a>
-                </li>
-                {{end}}
-                <li class="page-item {{if not .HasNext}} disabled {{end}}">
-                    <a class="page-link"
-                        href="{{if .HasNext}} {{.Paginator.NextPageURL}} {{else}} # {{end}}">
-                        Следующая
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        {{end}}
-
     </div>
     <!-- /.container -->
     <!-- Bootstrap core JavaScript -->

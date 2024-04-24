@@ -29,7 +29,7 @@ func (h Handler) UpdateBook(c *fiber.Ctx) error {
 	errchan := make(chan error)
 
 	go func() {
-		if err := h.repo.UpdateBook(updatedId, &book); err != nil {
+		if err := h.repo.UpdateBook(uint(updatedId), &book); err != nil {
 			errchan <- err
 		} else {
 			errchan <- nil

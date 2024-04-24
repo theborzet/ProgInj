@@ -15,7 +15,7 @@ func (h Handler) ViewClientId(c *fiber.Ctx) error {
 	}
 	var client *models.Client
 
-	client, err = h.repo.GetClientID(clientID)
+	client, err = h.repo.GetClientID(uint(clientID))
 	if err != nil {
 		return fiber.NewError(fiber.StatusNotFound, err.Error())
 	}

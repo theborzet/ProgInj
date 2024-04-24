@@ -18,12 +18,11 @@ func (h Handler) UpdateClient(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 	client := models.Client{
-		Username:         updatedClient.Username,
-		Password:         updatedClient.Password,
-		Email:            updatedClient.Email,
-		AccessLevel:      updatedClient.AccessLevel,
-		Books:            updatedClient.Books,
-		IsAuthentificate: updatedClient.IsAuthentificate,
+		Username:    updatedClient.Username,
+		Password:    updatedClient.Password,
+		Email:       updatedClient.Email,
+		AccessLevel: updatedClient.AccessLevel,
+		Books:       updatedClient.Books,
 	}
 
 	errchan := make(chan error)

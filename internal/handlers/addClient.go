@@ -13,12 +13,11 @@ func (h Handler) AddClient(c *fiber.Ctx) error {
 	}
 
 	client := models.Client{
-		Username:         body.Username,
-		Password:         body.Password,
-		Email:            body.Email,
-		AccessLevel:      body.AccessLevel,
-		Books:            body.Books,
-		IsAuthentificate: body.IsAuthentificate,
+		Username:    body.Username,
+		Password:    body.Password,
+		Email:       body.Email,
+		AccessLevel: body.AccessLevel,
+		Books:       body.Books,
 	}
 
 	errchan := make(chan error)

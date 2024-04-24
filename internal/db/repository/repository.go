@@ -150,11 +150,11 @@ func (r *SQLRepository) GetClientID(id uint) (*models.Client, error) {
 	query := "SELECT id, username, password,, email, access_level FROM client WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 
-	client := models.NewClient()
+	var client models.Client
 	if err := row.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel, &client.Books); err != nil {
 		return nil, err
 	}
-	return client, nil
+	return &client, nil
 }
 
 func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
@@ -168,11 +168,11 @@ func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
 	var clients []*models.Client
 
 	for rows.Next() {
-		client := models.NewClient()
+		var client models.Client
 		if err := rows.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel, &client.Books); err != nil {
 			return nil, err
 		}
-		clients = append(clients, client)
+		clients = append(clients, &client)
 	}
 
 	return clients, nil

@@ -26,7 +26,10 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	app.Get("/", handler.IndexView)
 
 	bookRoutes := app.Group("/books")
-	bookRoutes.Post("/", handler.AddBook)
+	bookRoutes.Post("/add", handler.AddBook)
+	bookRoutes.Get("/add", func(c *fiber.Ctx) error {
+		return c.Render("", fiber.Map{})
+	})
 	bookRoutes.Delete("/:id", handler.DeleteBook)
 	bookRoutes.Get("/", handler.ViewAllBooks)
 	bookRoutes.Get("/:id", handler.ViewBookId)

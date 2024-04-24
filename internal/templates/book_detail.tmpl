@@ -55,7 +55,8 @@
                                 <p class="card-text"><strong>Автор:</strong> <a href="/author/{{.Author.ID}}">{{.Author.FirstName}} {{.Author.LastName}}</a></p>
                                 <p class="card-text"><strong>Год публикации:</strong> {{.Book.PublicationYear}}</p>
                                 <p class="card-text"><strong>Жанр:</strong> {{.Book.Genre}}</p>
-                                <p class="card-text"><strong>Количество:</strong> {{.Book.Count}}</p>
+                                <p class="card-text"><strong>Описание:</strong> {{.Book.Description}}</p>
+                                <a href="/static/vendor/pdf/{{.Book.Title}}.pdf">Получить PDF</a>
                                 <!-- Добавьте здесь другие поля, которые вы хотите отображать для книги -->
                             </div>
                         </div>
@@ -76,4 +77,5 @@
 </body>
 
 </html>
+
 {{end}}

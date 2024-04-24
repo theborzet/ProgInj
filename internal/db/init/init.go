@@ -45,8 +45,8 @@ func migrateDB(db *sqlx.DB) {
 			author_id INTEGER REFERENCES Author(id),
 			publication_year INT,
 			genre VARCHAR(100),
-			count INT,
-			photo_url TEXT -- Поле для хранения URL-адреса фотографии книги
+			photo_url TEXT,
+			description TEXT
 		)
     `)
 	if err != nil {

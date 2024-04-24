@@ -17,7 +17,7 @@ func (h Handler) AddBook(c *fiber.Ctx) error {
 		AuthorID:        body.AuthorID,
 		PublicationYear: body.PublicationYear,
 		Genre:           body.Genre,
-		Count:           body.Count,
+		Description:     body.Description,
 		ImageUrl:        body.ImageUrl,
 	}
 

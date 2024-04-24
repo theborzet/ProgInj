@@ -9,3 +9,9 @@ type Client struct {
 	Books            []Book `json:"books" db:"books"`
 	IsAuthentificate bool   `json:"is_authentificate"`
 }
+
+func NewClient() *Client {
+	return &Client{
+		IsAuthentificate: false,
+	}
+}

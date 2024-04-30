@@ -35,7 +35,7 @@
         <div class="row">
             <!-- Поиск книги -->
             <div class="col-md-12 mb-4">
-                <form action="/books/search" method="GET" class="d-flex justify-content-between align-items-center">
+                <form action="/books" method="GET" class="d-flex justify-content-between align-items-center">
                     <input type="text" class="form-control mr-2" id="search" name="search" placeholder="Введите название книги">
                     <button type="submit" class="btn btn-primary">Поиск</button>
                 </form>
@@ -44,7 +44,7 @@
         <div class="row">
             <!-- Фильтры -->
             <div class="col-md-3">
-                <form action="/books/filter" method="POST">
+                <form action="/books" method="post">
                     <!-- Фильтр по жанру -->
                     <div class="filter-group">
                         <label for="genre" class="form-label">Жанр:</label>
@@ -65,11 +65,9 @@
                             {{end}}
                         </select>
                     </div>
-                    <!-- Фильтр по году (от) -->
                     <div class="filter-group">
                         <input type="number" class="form-control" id="year_from" name="year_from" placeholder="Год (от)">
                     </div>
-                    <!-- Фильтр по году (до) -->
                     <div class="filter-group">
                         <input type="number" class="form-control" id="year_to" name="year_to" placeholder="Год (до)">
                     </div>
@@ -80,9 +78,11 @@
                 </form>
             </div>
             <!-- Список книг -->
-            <div class="col-md-9">
-                <div class="row">
-                    {{range .Books}}
+            <div class="row">
+            {{if .Books}}
+                <div class="col-md-9">
+                    <div class="row">
+                        {{range .Books}}
                     <div class="col-lg-4 col-md-6 mb-4">
                         <div class="card h-100 book-card">
                             <a href="#">
@@ -97,8 +97,13 @@
                         </div>
                     </div>
                     {{end}}
+                    </div>
                 </div>
-            </div>
+            {{else}}
+                <div class="col-md-9">
+                    <p>Ничего не найдено</p>
+                </div>
+            {{end}}
         </div>
     </div>
     <!-- /.container -->

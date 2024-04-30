@@ -1,7 +1,5 @@
-{{define "book_list"}}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -14,7 +12,6 @@
     <link href="/static/vendor/css/products.css" rel="stylesheet">
     {{block "css" .}} {{end}}
 </head>
-
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -36,50 +33,73 @@
     <!-- Page Content -->
     <div class="container">
         <div class="row">
-            {{range .Books}}
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <a href="#">
-                        <img class="card-img-top" src="{{.ImageUrl}}" alt="">
-                    </a>
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            <a href="/books/{{.ID}}">{{.Title}}</a>
-                        </h4>
-                        <p><strong>Жанр:</strong> {{.Genre}}</p>
+            <!-- Поиск книги -->
+            <div class="col-md-12 mb-4">
+                <form action="/books/search" method="GET" class="d-flex justify-content-between align-items-center">
+                    <input type="text" class="form-control mr-2" id="search" name="search" placeholder="Введите название книги">
+                    <button type="submit" class="btn btn-primary">Поиск</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Фильтры -->
+            <div class="col-md-3">
+                <form action="/books/filter" method="POST">
+                    <!-- Фильтр по жанру -->
+                    <div class="filter-group">
+                        <label for="genre" class="form-label">Жанр:</label>
+                        <select class="form-select" id="genre" name="genre">
+                            <option value="">Выберите жанр</option>
+                            {{range .Genres}}
+                            <option value="{{.}}">{{.}}</option>
+                            {{end}}
+                        </select>
                     </div>
+                    <!-- Фильтр по автору -->
+                    <div class="filter-group">
+                        <label for="author" class="form-label">Автор:</label>
+                        <select class="form-select" id="author" name="author">
+                            <option value="">Выберите автора</option>
+                            {{range .Authors}}
+                            <option value="{{.ID}}">{{.FirstName}} {{.LastName}}</option>
+                            {{end}}
+                        </select>
+                    </div>
+                    <!-- Фильтр по году (от) -->
+                    <div class="filter-group">
+                        <input type="number" class="form-control" id="year_from" name="year_from" placeholder="Год (от)">
+                    </div>
+                    <!-- Фильтр по году (до) -->
+                    <div class="filter-group">
+                        <input type="number" class="form-control" id="year_to" name="year_to" placeholder="Год (до)">
+                    </div>
+                    <!-- Кнопка применить фильтр -->
+                    <div class="filter-group">
+                        <button type="submit" class="btn btn-primary">Применить фильтр</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Список книг -->
+            <div class="col-md-9">
+                <div class="row">
+                    {{range .Books}}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 book-card">
+                            <a href="#">
+                                <img class="card-img-top" src="{{.ImageUrl}}" alt="">
+                            </a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a href="/books/{{.ID}}">{{.Title}}</a>
+                                </h4>
+                                <p><strong>Жанр:</strong> {{.Genre}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {{end}}
                 </div>
             </div>
-            {{end}}
         </div>
-        <!-- Pagination -->
-        {{if .IsPaginated}}
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item {{if not .HasPrevious}} disabled {{end}}">
-                    <a class="page-link"
-                        href="{{if .HasPrevious}} {{.Paginator.PreviousPageURL}} {{else}} # {{end}}"
-                        tabindex="-1" aria-disabled="true">
-                        Предыдущая
-                    </a>
-                </li>
-                {{range .Paginator.PageNumbers}}
-                <li class="page-item">
-                    <a class="page-link" href="{{.URL}}">
-                        {{.Number}}
-                    </a>
-                </li>
-                {{end}}
-                <li class="page-item {{if not .HasNext}} disabled {{end}}">
-                    <a class="page-link"
-                        href="{{if .HasNext}} {{.Paginator.NextPageURL}} {{else}} # {{end}}">
-                        Следующая
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        {{end}}
-
     </div>
     <!-- /.container -->
     <!-- Bootstrap core JavaScript -->
@@ -91,6 +111,4 @@
     <!-- FontAwesome script -->
     <script src="/static/vendor/fontawesome/fontawesome-icons.js" crossorigin="anonymous"></script>
 </body>
-
 </html>
-{{end}}

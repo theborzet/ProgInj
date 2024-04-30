@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/theborzet/library_project/internal/db/models"
@@ -10,7 +11,7 @@ import (
 type Repository interface {
 	DeleteRecord(tableName string, id uint) error
 	GetBookID(id uint) (*models.Book, error)
-	GetAllBooks() ([]*models.Book, error)
+	GetAllBooks(genre string, authorID uint, yearFrom, yearTo int) ([]*models.Book, error)
 	UpdateBook(id uint, updated *models.Book) error
 	AddBook(book *models.Book) error
 	GetAuthorID(id uint) (*models.Author, error)
@@ -22,6 +23,7 @@ type Repository interface {
 	UpdateClient(id uint, updated *models.Client) error
 	AddClient(client *models.Client) error
 	GetAuthorBooks(author_id uint) ([]*models.Book, error)
+	GetAllGenres() ([]*string, error)
 }
 
 type SQLRepository struct {
@@ -50,8 +52,22 @@ func (r *SQLRepository) GetBookID(id uint) (*models.Book, error) {
 	}
 	return &book, nil
 }
-func (r *SQLRepository) GetAllBooks() ([]*models.Book, error) {
-	query := "SELECT id, title, author_id, publication_year, genre, description, photo_url FROM book"
+func (r *SQLRepository) GetAllBooks(genre string, authorID uint, yearFrom, yearTo int) ([]*models.Book, error) {
+	query := "SELECT id, title, author_id, publication_year, genre, description, photo_url FROM book WHERE 1=1"
+	if genre != "" {
+		query += fmt.Sprintf(" AND genre = '%s'", genre)
+	}
+	if authorID != 0 {
+		query += fmt.Sprintf(" AND author_id = %d", authorID)
+	}
+	if yearFrom != 0 {
+		query += fmt.Sprintf(" AND publication_year >= %d", yearFrom)
+	}
+	if yearTo != 0 {
+		query += fmt.Sprintf(" AND publication_year <= %d", yearTo)
+	}
+
+	log.Println(query)
 	rows, err := r.db.Query(query)
 
 	if err != nil {
@@ -188,4 +204,24 @@ func (r *SQLRepository) AddClient(client *models.Client) error {
 	query := "INSERT INTO client (username, password, email, access_level, books) VALUES ($1, $2, $3, $4, $5)"
 	_, err := r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel, client.Books)
 	return err
+}
+
+func (r *SQLRepository) GetAllGenres() ([]*string, error) {
+	query := "SELECT DISTINCT genre FROM book"
+	rows, err := r.db.Query(query)
+
+	if err != nil {
+		return nil, err
+	}
+	var genres []*string
+
+	for rows.Next() {
+		var genre string
+		if err := rows.Scan(&genre); err != nil {
+			return nil, err
+		}
+		genres = append(genres, &genre)
+	}
+
+	return genres, nil
 }

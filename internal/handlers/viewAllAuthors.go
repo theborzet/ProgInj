@@ -28,7 +28,7 @@ func (h Handler) ViewAllAuthors(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusNotFound, err.Error())
 	}
 
-	pageSize := 10
+	pageSize := 4
 	paginatedAuthors, paginator := pagination.PaginateAuthors(authors, page, pageSize)
 
 	return c.Render("author_list", fiber.Map{

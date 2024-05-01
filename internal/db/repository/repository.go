@@ -120,7 +120,6 @@ func (r *SQLRepository) GetAllAuthors(first_name, last_name string) ([]*models.A
 		lowercaseLastName := strings.ToLower(last_name)
 		query += fmt.Sprintf(" AND LOWER(last_name) LIKE '%%%s%%' OR LOWER(first_name) LIKE '%%%s%%'", lowercaseLastName, lowercaseLastName) // Используем оператор LIKE для поиска по названию
 	}
-
 	rows, err := r.db.Query(query)
 
 	if err != nil {

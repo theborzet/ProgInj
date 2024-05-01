@@ -34,8 +34,39 @@
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/catalog">Каталог <i class="fas fa-shopping-bag"></i> </a>
+                        <a class="nav-link" href="/books">Каталог <i class="fas fa-shopping-bag"></i> </a>
                     </li>
+                    {{ if .IsAuthenticated }}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="/profile/{{ .user.id }}">Профиль</a>
+                            </li>
+                            <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
+                            {{ if or .user.is_superuser .user.is_staff }}
+                            <li>
+                                <a class="dropdown-item" href="/admin">Админ-панель</a>
+                            </li>
+                            {{ end }}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/logout">
+                                    Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {{ else }}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/registration">Войти <i class="fas fa-sign-in-alt"></i></a>
+                    </li>
+                    {{ end }}
                 </ul>
             </div>
         </div>

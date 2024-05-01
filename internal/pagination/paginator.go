@@ -47,8 +47,9 @@ func PaginateBooks(books []*models.Book, page, pageSize int) ([]*models.Book, Pa
 	paginator.PageNumbers = make([]PageNumber, paginator.TotalPages)
 	for i := range paginator.PageNumbers {
 		paginator.PageNumbers[i] = PageNumber{
-			Number: i + 1,
-			URL:    fmt.Sprintf("/books?page=%d", i+1),
+			Number:   i + 1,
+			URL:      fmt.Sprintf("/books?page=%d", i+1),
+			IsActive: i+1 == page,
 		}
 	}
 
@@ -96,8 +97,9 @@ func PaginateAuthors(authors []*models.Author, page, pageSize int) ([]*models.Au
 	paginator.PageNumbers = make([]PageNumber, paginator.TotalPages)
 	for i := range paginator.PageNumbers {
 		paginator.PageNumbers[i] = PageNumber{
-			Number: i + 1,
-			URL:    fmt.Sprintf("/author?page=%d", i+1),
+			Number:   i + 1,
+			URL:      fmt.Sprintf("/author?page=%d", i+1),
+			IsActive: i+1 == page,
 		}
 	}
 

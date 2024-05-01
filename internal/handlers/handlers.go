@@ -28,7 +28,14 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	bookRoutes := app.Group("/books")
 	bookRoutes.Post("/add", handler.AddBook)
 	bookRoutes.Get("/add", func(c *fiber.Ctx) error {
-		return c.Render("", fiber.Map{})
+		authors, err := handler.repo.GetAllAuthors("", "")
+		if err != nil {
+			return fiber.NewError(fiber.StatusBadRequest, err.Error())
+		}
+		return c.Render("add_book", fiber.Map{
+			"Authors": authors,
+			"Title":   "Добавление книги",
+		})
 	})
 	bookRoutes.Delete("/:id", handler.DeleteBook)
 	bookRoutes.Get("/", handler.ViewAllBooks)
@@ -36,8 +43,13 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	bookRoutes.Put("/:id", handler.UpdateBook)
 	bookRoutes.Post("/", handler.ViewAllBooks)
 
-	authorRoutes := app.Group("/author")
+	authorRoutes := app.Group("/authors")
 	authorRoutes.Post("/add", handler.AddAuthor)
+	authorRoutes.Get("/add", func(c *fiber.Ctx) error {
+		return c.Render("add_author", fiber.Map{
+			"Title": "Добавление автора",
+		})
+	})
 	authorRoutes.Delete("/:id", handler.DeleteAuthor)
 	authorRoutes.Get("/", handler.ViewAllAuthors)
 	authorRoutes.Get("/:id", handler.ViewAuthorId)

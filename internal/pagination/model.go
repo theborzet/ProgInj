@@ -13,6 +13,7 @@ type Paginator struct {
 }
 
 type PageNumber struct {
-	Number int
-	URL    string
+	Number   int
+	URL      string
+	IsActive bool
 }

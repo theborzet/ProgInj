@@ -77,7 +77,6 @@
                     </div>
                 </form>
             </div>
-            <!-- Список книг -->
             <div class="col-md-9">
                 {{if .Books}}
                 <div class="row">
@@ -92,12 +91,13 @@
                                     <a href="/books/{{.ID}}">{{.Title}}</a>
                                 </h4>
                                 <p><strong>Жанр:</strong> {{.Genre}}</p>
+                                <a href="/books/{{.ID}}" method="delete" class="btn btn-danger">Удалить</a>
+                                <a href="/books/{{.ID}}/edit" class="btn btn-primary">Изменить</a>
                             </div>
                         </div>
                     </div>
                     {{end}}
                 </div>
-                <!-- Пагинация -->
                 {{ if .IsPaginated }}
                 <nav aria-label="Page navigation">
                     <ul class="pagination justify-content-center">

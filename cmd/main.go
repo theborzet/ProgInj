@@ -2,8 +2,10 @@ package main
 
 import (
 	"log"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/csrf"
 	"github.com/gofiber/template/html/v2"
 	db "github.com/theborzet/library_project/internal/db/init"
 	"github.com/theborzet/library_project/internal/handlers"
@@ -19,6 +21,21 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+	app.Use(csrf.New(csrf.Config{
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			accepts := c.Accepts("html", "json")
+			path := c.Path()
+			if accepts == "json" || strings.HasPrefix(path, "/api/") {
+				return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+					"error": "Forbidden",
+				})
+			}
+			return c.Status(fiber.StatusForbidden).Render("error", fiber.Map{
+				"Title":  "Forbidden",
+				"Status": fiber.StatusForbidden,
+			}, "layouts/main")
+		},
+	}))
 
 	app.Static("/static", "./internal/static")
 

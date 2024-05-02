@@ -65,4 +65,9 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 
 	app.Get("/registration", handler.SignUpUserForm)
 	app.Post("/registration", handler.SignUpUser)
+	app.Get("/login", func(c *fiber.Ctx) error {
+		return c.Render("sign_in", fiber.Map{})
+	})
+	app.Post("/login", handler.SignInUser)
+
 }

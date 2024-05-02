@@ -24,6 +24,7 @@ type Repository interface {
 	AddClient(client *models.Client) error
 	GetAuthorBooks(author_id uint) ([]*models.Book, error)
 	GetAllGenres() ([]*string, error)
+	GetPass(username string) (*models.Client, error)
 }
 
 type SQLRepository struct {
@@ -234,4 +235,17 @@ func (r *SQLRepository) GetAllGenres() ([]*string, error) {
 	}
 
 	return genres, nil
+}
+
+func (r *SQLRepository) GetPass(username string) (*models.Client, error) {
+	query := "SELECT password FROM client WHERE username = $1"
+	row := r.db.QueryRow(query, username)
+
+	var NewClient models.Client
+
+	if err := row.Scan(&NewClient.Password); err != nil {
+		return nil, err
+	}
+	return &NewClient, nil
+
 }

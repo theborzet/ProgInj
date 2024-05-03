@@ -25,6 +25,7 @@ type Repository interface {
 	GetAuthorBooks(author_id uint) ([]*models.Book, error)
 	GetAllGenres() ([]*string, error)
 	GetPass(username string) (*models.Client, error)
+	UserExists(username string) error
 }
 
 type SQLRepository struct {
@@ -248,4 +249,16 @@ func (r *SQLRepository) GetPass(username string) (*models.Client, error) {
 	}
 	return &NewClient, nil
 
+}
+
+func (r *SQLRepository) UserExists(username string) error {
+
+	query := "SELECT EXISTS(SELECT 1 FROM client WHERE username = ?)"
+
+	var exists bool
+	if err := r.db.QueryRow(query, username).Scan(&exists); err != nil {
+		return err
+	}
+
+	return nil
 }

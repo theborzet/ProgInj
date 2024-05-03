@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -215,9 +216,16 @@ func (r *SQLRepository) UpdateClient(id uint, updated *models.Client) error {
 }
 
 func (r *SQLRepository) AddClient(client *models.Client) error {
+	// Преобразуем список книг в формат JSON
+	booksJSON, err := json.Marshal(client.Books)
+	if err != nil {
+		return err // Возвращаем ошибку, если не удалось преобразовать в JSON
+	}
+
+	// Выполняем запрос SQL с использованием JSON в качестве значения для столбца books
 	query := "INSERT INTO client (username, password, email, access_level, books) VALUES ($1, $2, $3, $4, $5)"
-	_, err := r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel, client.Books)
-	return err
+	_, err = r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel, booksJSON)
+	return err // Возвращаем ошибку, если запрос выполнен с ошибкой
 }
 
 func (r *SQLRepository) ViewClientBook(client_id int) ([]*models.Book, error) {

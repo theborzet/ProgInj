@@ -4,12 +4,14 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/jmoiron/sqlx"
 	"github.com/theborzet/library_project/internal/db/repository"
 )
 
 type Handler struct {
-	repo repository.Repository
+	repo     repository.Repository
+	sessions *session.Session
 }
 
 func NewHandler(repo repository.Repository) *Handler {

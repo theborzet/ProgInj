@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -26,6 +27,7 @@ type Repository interface {
 	GetAllGenres() ([]*string, error)
 	GetPass(username string) (*models.Client, error)
 	UserExists(username string) error
+	ViewClientBook(client_id int) ([]*models.Book, error)
 }
 
 type SQLRepository struct {
@@ -216,6 +218,26 @@ func (r *SQLRepository) AddClient(client *models.Client) error {
 	query := "INSERT INTO client (username, password, email, access_level, books) VALUES ($1, $2, $3, $4, $5)"
 	_, err := r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel, client.Books)
 	return err
+}
+
+func (r *SQLRepository) ViewClientBook(client_id int) ([]*models.Book, error) {
+	query := "SELECT id, title, author_id, publication_year, genre, description, photo_url FROM book WHERE id IN (SELECT value::int FROM jsonb_each_text((SELECT books FROM client WHERE id = $1)))"
+	rows, err := r.db.Query(query, client_id)
+	log.Println(err, rows)
+	if err != nil {
+		return nil, err
+	}
+
+	var books []*models.Book
+
+	for rows.Next() {
+		var book models.Book
+		if err := rows.Scan(&book.ID, &book.Title, &book.AuthorID, &book.PublicationYear, &book.Genre, &book.Description, &book.ImageUrl); err != nil {
+			return nil, err
+		}
+		books = append(books, &book)
+	}
+	return books, nil
 }
 
 func (r *SQLRepository) GetAllGenres() ([]*string, error) {

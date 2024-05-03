@@ -111,4 +111,5 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	})
 	app.Post("/login", handler.SignInUser)
 
+	app.Get("/profile/:id", handler.ViewClientBooks)
 }

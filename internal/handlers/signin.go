@@ -6,10 +6,10 @@ import (
 
 func (h Handler) SignInUser(c *fiber.Ctx) error {
 	// Получаем сессию из контекста
-	sess, err := h.sessions.Get(c)
-	if err != nil {
-		return err
-	}
+	// sess, err := h.sessions.Get(c)
+	// if err != nil {
+	// 	return err
+	// }
 
 	// Получаем пользователя из базы данных
 	username := c.FormValue("username")
@@ -22,12 +22,12 @@ func (h Handler) SignInUser(c *fiber.Ctx) error {
 	// Проверяем правильность пароля
 	if password == user.Password {
 		// Устанавливаем значение "userID" в сессии
-		sess.Set("userID", user.ID)
+		// sess.Set("userID", user.ID)
 
 		// Сохраняем сессию
-		if err := sess.Save(); err != nil {
-			return err
-		}
+		// if err := sess.Save(); err != nil {
+		// 	return err
+		// }
 
 		// Перенаправляем на главную страницу после успешной аутентификации
 		return c.Redirect("/", fiber.StatusFound)

@@ -17,7 +17,6 @@ func (h Handler) AddClient(c *fiber.Ctx) error {
 		Password:    body.Password,
 		Email:       body.Email,
 		AccessLevel: body.AccessLevel,
-		Books:       body.Books,
 	}
 
 	errchan := make(chan error)

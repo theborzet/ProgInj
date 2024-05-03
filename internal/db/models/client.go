@@ -6,5 +6,4 @@ type Client struct {
 	Password    string `json:"password" db:"password"`
 	Email       string `json:"email" db:"email"`
 	AccessLevel int    `json:"access_level" db:"access_level"`
-	Books       []Book `json:"books" db:"books"`
 }

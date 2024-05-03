@@ -1,9 +1,7 @@
 package repository
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/jmoiron/sqlx"
@@ -178,18 +176,18 @@ func (r *SQLRepository) GetAuthorBooks(author_id uint) ([]*models.Book, error) {
 }
 
 func (r *SQLRepository) GetClientID(id uint) (*models.Client, error) {
-	query := "SELECT id, username, password,, email, access_level FROM client WHERE id = $1"
+	query := "SELECT id, username, password, email, access_level FROM client WHERE id = $1"
 	row := r.db.QueryRow(query, id)
 
 	var client models.Client
-	if err := row.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel, &client.Books); err != nil {
+	if err := row.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel); err != nil {
 		return nil, err
 	}
 	return &client, nil
 }
 
 func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
-	query := "SELECT id, username, password, email, access_level, books FROM client ORDER BY id ASC"
+	query := "SELECT id, username, password, email, access_level FROM client ORDER BY id ASC"
 	rows, err := r.db.Query(query)
 
 	if err != nil {
@@ -200,7 +198,7 @@ func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
 
 	for rows.Next() {
 		var client models.Client
-		if err := rows.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel, &client.Books); err != nil {
+		if err := rows.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel); err != nil {
 			return nil, err
 		}
 		clients = append(clients, &client)
@@ -210,28 +208,20 @@ func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
 }
 
 func (r *SQLRepository) UpdateClient(id uint, updated *models.Client) error {
-	query := "UPDATE client SET username = $1, password = $2, email = $3 access_level = $4, books = $5 WHERE id = $6"
-	_, err := r.db.Exec(query, updated.Username, updated.Password, updated.Email, updated.AccessLevel, updated.Books, id)
+	query := "UPDATE client SET username = $1, password = $2, email = $3 access_level = $4, WHERE id = $5"
+	_, err := r.db.Exec(query, updated.Username, updated.Password, updated.Email, updated.AccessLevel, id)
 	return err
 }
 
 func (r *SQLRepository) AddClient(client *models.Client) error {
-	// Преобразуем список книг в формат JSON
-	booksJSON, err := json.Marshal(client.Books)
-	if err != nil {
-		return err // Возвращаем ошибку, если не удалось преобразовать в JSON
-	}
-
-	// Выполняем запрос SQL с использованием JSON в качестве значения для столбца books
-	query := "INSERT INTO client (username, password, email, access_level, books) VALUES ($1, $2, $3, $4, $5)"
-	_, err = r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel, booksJSON)
+	query := "INSERT INTO client (username, password, email, access_level) VALUES ($1, $2, $3, $4)"
+	_, err := r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel)
 	return err // Возвращаем ошибку, если запрос выполнен с ошибкой
 }
 
 func (r *SQLRepository) ViewClientBook(client_id int) ([]*models.Book, error) {
-	query := "SELECT id, title, author_id, publication_year, genre, description, photo_url FROM book WHERE id IN (SELECT value::int FROM jsonb_each_text((SELECT books FROM client WHERE id = $1)))"
+	query := "SELECT  b.id, b.title, b.author_id, b.publication_year, b.genre, b.description, b.photo_url FROM book AS b JOIN client_book AS c ON b.id = c.book_id WHERE c.client_id = $1 ORDER BY b.id ASC"
 	rows, err := r.db.Query(query, client_id)
-	log.Println(err, rows)
 	if err != nil {
 		return nil, err
 	}

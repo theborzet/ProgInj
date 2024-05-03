@@ -26,7 +26,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6">
-                <h1 class="mt-5">Profile</h1>
+                <h1 class="mt-5">Профиль пользователя</h1>
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Username: {{ .Client.Username }}</h5>
@@ -37,21 +37,27 @@
         </div>
         <div class="row mt-5">
             <div class="col-lg-6">
-                <h2>Books</h2>
-                {{ if .Books }}
-                <div class="list-group">
-                    {{ range .Books }}
-                    <a href="/books/{{ .ID }}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ .Title }}</h5>
-                            <small><a href="/authors/{{ .AuthorID }}">{{ .Author }}</a></small>
+                <h2>Ваши книги</h2>
+                {{if .Books}}
+                <div class="row">
+                    {{range .Books}}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 book-card">
+                            <a href="#">
+                                <img class="card-img-top img-fluid" src="{{.ImageUrl}}" alt="">
+                            </a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a href="/books/{{.ID}}">{{.Title}}</a>
+                                </h4>
+                                <p><strong>Жанр:</strong> {{.Genre}}</p>
+                                <button class="btn btn-danger delete-btn" data-book-id="{{.ID}}">Удалить</button>
+                            </div>
                         </div>
-                        <img src="{{ .ImageURL }}" alt="{{ .Title }}" class="img-thumbnail">
-                    </a>
-                    {{ end }}
-                </div>
+                    </div>
+                    {{end}}
                 {{ else }}
-                <p>No books found</p>
+                <p>Ничего не найдено</p>
                 {{ end }}
             </div>
         </div>

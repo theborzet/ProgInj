@@ -27,7 +27,7 @@ func Init(c *config.Config) *sqlx.DB {
 
 func migrateDB(db *sqlx.DB) {
 	_, err := db.Exec(`
-        CREATE TABLE IF NOT EXISTS Author (
+        CREATE TABLE IF NOT EXISTS author (
             id SERIAL PRIMARY KEY,
             first_name VARCHAR(100) NOT NULL,
             last_name VARCHAR(100) NOT NULL,
@@ -39,7 +39,7 @@ func migrateDB(db *sqlx.DB) {
 		log.Fatalln(err)
 	}
 	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS Book (
+		CREATE TABLE IF NOT EXISTS book (
 			id SERIAL PRIMARY KEY,
 			title VARCHAR(255) NOT NULL,
 			author_id INTEGER REFERENCES Author(id),
@@ -54,14 +54,24 @@ func migrateDB(db *sqlx.DB) {
 	}
 
 	_, err = db.Exec(`
-        CREATE TABLE IF NOT EXISTS Client (
+        CREATE TABLE IF NOT EXISTS client (
             id SERIAL PRIMARY KEY,
             username VARCHAR(100) NOT NULL UNIQUE,
             password VARCHAR(100) NOT NULL,
 			email VARCHAR(100) NOT NULL,
-            access_level INT DEFAULT 0,
-            books JSONB DEFAULT '[]'::jsonb
+            access_level INT DEFAULT 0
         )
+    `)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS client_book (
+		client_id INTEGER REFERENCES client(id),
+		book_id INTEGER REFERENCES book(id),
+		PRIMARY KEY (client_id, book_id)
+		)
     `)
 	if err != nil {
 		log.Fatalln(err)

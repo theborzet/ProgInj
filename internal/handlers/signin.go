@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (h *Handler) SignInUser(c *fiber.Ctx) error {
@@ -18,9 +19,11 @@ func (h *Handler) SignInUser(c *fiber.Ctx) error {
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
+
 	// Проверяем правильность пароля
-	if password == user.Password {
-		// Устанавливаем значение "userID" в сессии
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err == nil {
+		// Устанавливаем значение "isAuthenticated" в сессии
 		sess.Set("isAuthenticated", true)
 		sess.Set("uID", user.ID)
 		sess.Set("acessLevel", user.AccessLevel)

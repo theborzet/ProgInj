@@ -65,62 +65,45 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 mb-4">
-                <form action="/authors" method="POST" class="d-flex justify-content-between align-items-center">
-                    <input type="text" class="form-control mr-2" id="fullname" name="fullname" placeholder="Введите имя автора">
-                    <button type="submit" class="btn btn-primary">Поиск</button>
+                <h2>Изменить книгу</h2>
+                <form action="/books/edit/{{ .Book.ID }}" method="POST">
+                    <!-- Добавляем скрытое поле для передачи идентификатора книги -->
+                    <input type="hidden" name="id" value="{{ .Book.ID }}">
+                    
+                    <div class="form-group">
+                        <label for="title">Название</label>
+                        <!-- Заполняем поле с текущим названием книги -->
+                        <input type="text" class="form-control" id="title" name="title" value="{{ .Book.Title }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="author">Автор</label>
+                        <select class="form-control" id="author" name="author" required>
+                            <option value="" disabled>Выберите автора</option>
+                            {{range .Authors}}
+                                <option value="{{.ID}}" {{ if eq .ID $.Book.AuthorID }} selected {{ end }}>{{.FirstName}} {{.LastName}}</option>
+                            {{end}}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="publication_year">Год публикации</label>
+                        <input type="number" class="form-control" id="publication_year" name="publication_year" value="{{ .Book.PublicationYear }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="genre">Жанр</label>
+                        <input type="text" class="form-control" id="genre" name="genre" value="{{ .Book.Genre }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Описание</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required>{{ .Book.Description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="image_url">Ссылка на изображение</label>
+                        <input type="text" class="form-control" id="image_url" name="image_url" value="{{ .Book.ImageUrl }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Изменить</button>
                 </form>
-                <a href="/authors/add" class="btn btn-success">Добавить автора</a>
             </div>
         </div>
-        <div class="row">
-            {{if .Authors}}
-                {{range .Authors}}
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100 book-card">
-                        <a href="#">
-                            <img class="card-img-top" src="{{.ImageUrl}}" alt="">
-                        </a>
-                        <div class="card-body">
-                            <h4 class="card-title">
-                                <a href="/authors/{{.ID}}">{{.FirstName}} {{.LastName}}</a>
-                            </h4>
-                        </div>
-                        <a href="/authors/edit/{{.ID}}" class="btn btn-primary">Изменить</a>
-                        <button class="btn btn-danger delete-btn" data-author-id="{{.ID}}">Удалить</button>
-                        
-                    </div>
-                </div>
-                {{end}}
-            {{else}}
-                <div class="col-md-12">
-                    <p>Ничего не найдено</p>
-                </div>
-            {{end}}
-        </div>
-        {{ if .IsPaginated }}
-        <!-- Пагинация -->
-        <div class="row justify-content-center">
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    {{ if .Paginator.HasPrevious  }}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ .Paginator.PreviousPage }}">Предыдущая</a>
-                    </li>
-                    {{ end }}
-                    {{ range .Paginator.PageNumbers }}
-                    <li class="page-item {{ if .IsActive }}active{{ end }}">
-                        <a class="page-link" href="?page={{ .Number }}">{{ .Number }}</a>
-                    </li>
-                    {{ end }}
-                    {{ if .Paginator.HasNext }}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ .Paginator.NextPage }}">Следующая</a>
-                    </li>
-                    {{ end }}
-                </ul>
-            </nav>
-        </div>
-        {{ end }}
     </div>
     <!-- /.container -->
     <!-- Bootstrap core JavaScript -->
@@ -131,6 +114,5 @@
         crossorigin="anonymous"></script>
     <!-- FontAwesome script -->
     <script src="/static/vendor/fontawesome/fontawesome-icons.js" crossorigin="anonymous"></script>
-    <script src="/static//vendor/js/deleteAuthor.js"></script>
 </body>
 </html>

@@ -76,6 +76,7 @@
                         <button type="submit" class="btn btn-primary">Применить фильтр</button>
                     </div>
                 </form>
+                <a href="/books/add" class="btn btn-success">Добавить книгу</a>
             </div>
             <div class="col-md-9">
                 {{if .Books}}
@@ -91,8 +92,8 @@
                                     <a href="/books/{{.ID}}">{{.Title}}</a>
                                 </h4>
                                 <p><strong>Жанр:</strong> {{.Genre}}</p>
-                                <a href="/books/{{.ID}}" method="delete" class="btn btn-danger">Удалить</a>
-                                <a href="/books/{{.ID}}/edit" class="btn btn-primary">Изменить</a>
+                                <a href="/books/edit/{{.ID}}" class="btn btn-primary">Изменить</a>
+                                <button class="btn btn-danger delete-btn" data-book-id="{{.ID}}">Удалить</button>
                             </div>
                         </div>
                     </div>
@@ -134,5 +135,6 @@
         crossorigin="anonymous"></script>
     <!-- FontAwesome script -->
     <script src="/static/vendor/fontawesome/fontawesome-icons.js" crossorigin="anonymous"></script>
+    <script src="/static//vendor/js/deleteBook.js"></script>
 </body>
 </html>

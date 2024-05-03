@@ -88,8 +88,9 @@
                                 <p class="card-text"><strong>Жанр:</strong> {{.Book.Genre}}</p>
                                 <p class="card-text"><strong>Описание:</strong> {{.Book.Description}}</p>
                                 <a href="/static/vendor/pdf/{{.Book.Title}}.pdf">Получить PDF</a>
-                                <!-- Добавьте здесь другие поля, которые вы хотите отображать для книги -->
                             </div>
+                            <a href="/books/edit/{{.Book.ID}}" class="btn btn-primary">Изменить</a>
+                            <button class="btn btn-danger delete-btn" data-book-id="{{.ID}}">Удалить</button>
                         </div>
                     </div>
                 </div>
@@ -105,6 +106,7 @@
         crossorigin="anonymous"></script>
     <!-- FontAwesome script -->
     <script src="/static/vendor/fontawesome/fontawesome-icons.js" crossorigin="anonymous"></script>
+    <script src="/static//vendor/js/deleteBook.js"></script>
 </body>
 
 </html>

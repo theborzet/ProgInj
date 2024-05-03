@@ -25,5 +25,5 @@ func (h Handler) DeleteAuthor(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.SendStatus(fiber.StatusOK)
+	return c.Redirect("/authors", fiber.StatusFound)
 }

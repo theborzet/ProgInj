@@ -43,7 +43,7 @@ func (h Handler) SignUpUser(c *fiber.Ctx) error {
 	}
 
 	// Возвращаем успешный ответ
-	return c.SendStatus(http.StatusOK)
+	return c.Redirect("/login", fiber.StatusFound)
 }
 
 // func (h Handler) SignUpUserForm(c *fiber.Ctx) error {

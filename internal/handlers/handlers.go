@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -10,22 +11,43 @@ import (
 )
 
 type Handler struct {
-	repo     repository.Repository
-	sessions *session.Session
+	repo    repository.Repository
+	session *session.Store
 }
 
-func NewHandler(repo repository.Repository) *Handler {
+func NewHandler(repo repository.Repository, session *session.Store) *Handler {
 	return &Handler{
-		repo: repo,
+		repo:    repo,
+		session: session,
 	}
 }
 
-func (h Handler) IndexView(c *fiber.Ctx) error {
-	return c.Render("index", fiber.Map{})
+func (h *Handler) IndexView(c *fiber.Ctx) error {
+	// Получаем сессию из контекста
+	sess, err := h.session.Get(c)
+	if err != nil {
+		return err
+	}
+
+	// Получаем значение "isAuthenticated" из сессии
+	isAuthenticated, ok := sess.Get("isAuthenticated").(bool)
+	if !ok {
+		isAuthenticated = false
+	}
+
+	// Рендеринг шаблона index.tmpl с передачей значения isAuthenticated
+	return c.Render("index", fiber.Map{
+		"isAuthenticated": isAuthenticated,
+	})
 }
 
 func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
-	handler := NewHandler(repository.NewSQLRepository(db))
+	// Создание новой сессии
+	sess := session.New(session.Config{
+		Expiration:   2 * time.Hour,
+		CookieSecure: true,
+	})
+	handler := NewHandler(repository.NewSQLRepository(db), sess)
 
 	app.Get("/", handler.IndexView)
 
@@ -112,5 +134,6 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 		return c.Render("sign_in", nil)
 	})
 	app.Post("/login", handler.SignInUser)
+	app.Post("/logout", handler.LogoutUser)
 
 }

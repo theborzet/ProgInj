@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/template/html/v2"
 	db "github.com/theborzet/library_project/internal/db/init"
 	"github.com/theborzet/library_project/internal/handlers"
@@ -21,10 +19,6 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
-	app.Use(session.New(session.Config{
-		Expiration:   2 * time.Hour,
-		CookieSecure: true,
-	}))
 
 	app.Static("/static", "./internal/static")
 

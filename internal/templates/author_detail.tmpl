@@ -92,6 +92,8 @@
                                 <p class="card-text"><strong>Дата рождения:</strong> {{.Author.BirthDate.Format "2 января 2006 года"}}</p>
                                 <!-- Добавьте здесь другие поля, которые вы хотите отображать для автора -->
                             </div>
+                            <a href="/authors/edit/{{.Author.ID}}" class="btn btn-primary">Изменить</a>
+                            <button class="btn btn-danger delete-btn" data-author-id="{{.ID}}">Удалить</button>
                         </div>
                     </div>
                 </div>
@@ -109,6 +111,8 @@
                                 <h5 class="card-title"><a href="/books/{{.ID}}">{{.Title}}</a></h5>
                                 <p class="card-text">{{.Genre}}</p>
                             </div>
+                            <a href="/books/edit/{{.ID}}" class="btn btn-primary">Изменить</a>
+                            <button class="btn btn-danger delete-btn" data-book-id="{{.ID}}">Удалить</button>
                         </div>
                     </div>
                     {{end}}
@@ -152,6 +156,8 @@
         crossorigin="anonymous"></script>
     <!-- FontAwesome script -->
     <script src="/static/vendor/fontawesome/fontawesome-icons.js" crossorigin="anonymous"></script>
+    <script src="/static//vendor/js/deleteAuthor.js"></script>
+    <script src="/static//vendor/js/deleteBook.js"></script>
 </body>
 
 </html>

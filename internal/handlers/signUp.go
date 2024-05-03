@@ -58,6 +58,7 @@ func (h Handler) SignUpUser(c *fiber.Ctx) error {
 
 	// Перенаправляем на страницу авторизации
 	log.Println("User registered successfully")
+	// Возвращаем успешный ответ
 	return c.Redirect("/login", fiber.StatusFound)
 }
 

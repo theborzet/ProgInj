@@ -56,7 +56,7 @@ func (r *SQLRepository) GetBookID(id uint) (*models.Book, error) {
 	return &book, nil
 }
 func (r *SQLRepository) GetAllBooks(genre, title string, authorID uint, yearFrom, yearTo int) ([]*models.Book, error) {
-	query := "SELECT id, title, author_id, publication_year, genre, description, photo_url FROM book WHERE 1=1"
+	query := "SELECT id, title, author_id, publication_year, genre, description, photo_url FROM book WHERE 1=1 ORDER BY id ASC"
 	if title != "" {
 		lowercaseTitle := strings.ToLower(title)
 		query += fmt.Sprintf(" AND LOWER(title) LIKE '%%%s%%'", lowercaseTitle) // Используем оператор LIKE для поиска по названию
@@ -114,7 +114,7 @@ func (r *SQLRepository) GetAuthorID(id uint) (*models.Author, error) {
 	return &author, nil
 }
 func (r *SQLRepository) GetAllAuthors(first_name, last_name string) ([]*models.Author, error) {
-	query := "SELECT id, first_name, last_name, birth_date, photo_url FROM author WHERE 1=1"
+	query := "SELECT id, first_name, last_name, birth_date, photo_url FROM author WHERE 1=1 ORDER BY id ASC"
 	if first_name != "" {
 		lowercaseFirstName := strings.ToLower(first_name)
 		query += fmt.Sprintf(" AND LOWER(first_name) LIKE '%%%s%%' OR LOWER(last_name) LIKE '%%%s%%'", lowercaseFirstName, lowercaseFirstName) // Используем оператор LIKE для поиска по названию
@@ -187,7 +187,7 @@ func (r *SQLRepository) GetClientID(id uint) (*models.Client, error) {
 }
 
 func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
-	query := "SELECT id, username, password, email, access_level, books FROM client"
+	query := "SELECT id, username, password, email, access_level, books FROM client ORDER BY id ASC"
 	rows, err := r.db.Query(query)
 
 	if err != nil {

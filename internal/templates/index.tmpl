@@ -36,7 +36,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="/profile/{{ .user.id }}">Профиль</a>
+                                <a class="dropdown-item" href="/profile/{{ .ClientId }}">Профиль</a>
                             </li>
                             <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
                             {{ if or .user.is_superuser .user.is_staff }}
@@ -65,7 +65,7 @@
     </nav>
 
     <!-- Page Content -->
-    <section>
+    <section class="library-section">
         <div class="container">
             <div class="row">
                 <div class="col-lg-6">

@@ -26,6 +26,37 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/books">Каталог <i class="fas fa-shopping-bag"></i> </a>
                     </li>
+                    {{ if .IsAuthenticated }}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle"></i>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li>
+                                <a class="dropdown-item" href="/profile/{{ .ClientId }}">Профиль</a>
+                            </li>
+                            <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
+                            {{ if or .user.is_superuser .user.is_staff }}
+                            <li>
+                                <a class="dropdown-item" href="/admin">Админ-панель</a>
+                            </li>
+                            {{ end }}
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/logout">
+                                    Выйти
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {{ else }}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login">Войти <i class="fas fa-sign-in-alt"></i></a>
+                    </li>
+                    {{ end }}
                 </ul>
             </div>
         </div>
@@ -76,7 +107,9 @@
                         <button type="submit" class="btn btn-primary">Применить фильтр</button>
                     </div>
                 </form>
-                <a href="/books/add" class="btn btn-success">Добавить книгу</a>
+                {{ if eq .Access_level  1 }}
+                    <a href="/books/add" class="btn btn-success">Добавить книгу</a>
+                {{end}}
             </div>
             <div class="col-md-9">
                 {{if .Books}}
@@ -92,8 +125,10 @@
                                     <a href="/books/{{.ID}}">{{.Title}}</a>
                                 </h4>
                                 <p><strong>Жанр:</strong> {{.Genre}}</p>
-                                <a href="/books/edit/{{.ID}}" class="btn btn-primary">Изменить</a>
-                                <button class="btn btn-danger delete-btn" data-book-id="{{.ID}}">Удалить</button>
+                                {{ if eq $.Access_level 1 }}
+                                    <a href="/books/edit/{{ .ID }}" class="btn btn-primary">Изменить</a>
+                                    <button class="btn btn-danger delete-btn" data-book-id="{{ .ID }}">Удалить</button>
+                                {{ end }}
                             </div>
                         </div>
                     </div>

@@ -17,3 +17,14 @@ body {
     text-decoration: none;
     color: white;
 }
+.library-section {
+    background-image: url("your-background-image-url.jpg");
+    background-size: cover;
+    padding: 100px 0; 
+    color: white; 
+}
+
+.library-section h1,
+.library-section p {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}

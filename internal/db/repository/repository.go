@@ -19,14 +19,13 @@ type Repository interface {
 	UpdateAuthor(id uint, updated *models.Author) error
 	AddAuthor(author *models.Author) error
 	GetClientID(id uint) (*models.Client, error)
-	GetAllClients() ([]*models.Client, error)
-	UpdateClient(id uint, updated *models.Client) error
 	AddClient(client *models.Client) error
 	GetAuthorBooks(author_id uint) ([]*models.Book, error)
 	GetAllGenres() ([]*string, error)
-	GetPass(username string) (*models.Client, error)
+	GetUser(username string) (*models.Client, error)
 	UserExists(username string) error
 	ViewClientBook(client_id int) ([]*models.Book, error)
+	AddClientBook(client_id, book_id int) error
 }
 
 type SQLRepository struct {
@@ -186,33 +185,6 @@ func (r *SQLRepository) GetClientID(id uint) (*models.Client, error) {
 	return &client, nil
 }
 
-func (r *SQLRepository) GetAllClients() ([]*models.Client, error) {
-	query := "SELECT id, username, password, email, access_level FROM client ORDER BY id ASC"
-	rows, err := r.db.Query(query)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var clients []*models.Client
-
-	for rows.Next() {
-		var client models.Client
-		if err := rows.Scan(&client.ID, &client.Username, &client.Password, &client.Email, &client.AccessLevel); err != nil {
-			return nil, err
-		}
-		clients = append(clients, &client)
-	}
-
-	return clients, nil
-}
-
-func (r *SQLRepository) UpdateClient(id uint, updated *models.Client) error {
-	query := "UPDATE client SET username = $1, password = $2, email = $3 access_level = $4, WHERE id = $5"
-	_, err := r.db.Exec(query, updated.Username, updated.Password, updated.Email, updated.AccessLevel, id)
-	return err
-}
-
 func (r *SQLRepository) AddClient(client *models.Client) error {
 	query := "INSERT INTO client (username, password, email, access_level) VALUES ($1, $2, $3, $4)"
 	_, err := r.db.Exec(query, client.Username, client.Password, client.Email, client.AccessLevel)
@@ -220,7 +192,7 @@ func (r *SQLRepository) AddClient(client *models.Client) error {
 }
 
 func (r *SQLRepository) ViewClientBook(client_id int) ([]*models.Book, error) {
-	query := "SELECT  b.id, b.title, b.author_id, b.publication_year, b.genre, b.description, b.photo_url FROM book AS b JOIN client_book AS c ON b.id = c.book_id WHERE c.client_id = $1 ORDER BY b.id ASC"
+	query := "SELECT DISTINCT b.id, b.title, b.author_id, b.publication_year, b.genre, b.description, b.photo_url FROM book AS b JOIN client_book AS c ON b.id = c.book_id WHERE c.client_id = $1 ORDER BY b.id ASC"
 	rows, err := r.db.Query(query, client_id)
 	if err != nil {
 		return nil, err
@@ -236,6 +208,12 @@ func (r *SQLRepository) ViewClientBook(client_id int) ([]*models.Book, error) {
 		books = append(books, &book)
 	}
 	return books, nil
+}
+func (r *SQLRepository) AddClientBook(client_id, book_id int) error {
+	query := "INSERT INTO client_book (client_id, book_id) VALUES ($1, $2)"
+
+	_, err := r.db.Exec(query, client_id, book_id)
+	return err
 }
 
 func (r *SQLRepository) GetAllGenres() ([]*string, error) {
@@ -258,13 +236,13 @@ func (r *SQLRepository) GetAllGenres() ([]*string, error) {
 	return genres, nil
 }
 
-func (r *SQLRepository) GetPass(username string) (*models.Client, error) {
-	query := "SELECT password FROM client WHERE username = $1"
+func (r *SQLRepository) GetUser(username string) (*models.Client, error) {
+	query := "SELECT id, password, access_level FROM client WHERE username = $1"
 	row := r.db.QueryRow(query, username)
 
 	var NewClient models.Client
 
-	if err := row.Scan(&NewClient.Password); err != nil {
+	if err := row.Scan(&NewClient.ID, &NewClient.Password, &NewClient.AccessLevel); err != nil {
 		return nil, err
 	}
 	return &NewClient, nil

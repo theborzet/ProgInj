@@ -23,7 +23,6 @@
 </head>
 
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/">ЛитРесурс</a>
@@ -44,7 +43,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="/profile/{{ .user.id }}">Профиль</a>
+                                <a class="dropdown-item" href="/profile/{{ .ClientId }}">Профиль</a>
                             </li>
                             <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
                             {{ if or .user.is_superuser .user.is_staff }}
@@ -64,7 +63,7 @@
                     </li>
                     {{ else }}
                     <li class="nav-item">
-                        <a class="nav-link" href="/registration">Войти <i class="fas fa-sign-in-alt"></i></a>
+                        <a class="nav-link" href="/login">Войти <i class="fas fa-sign-in-alt"></i></a>
                     </li>
                     {{ end }}
                 </ul>
@@ -87,10 +86,16 @@
                                 <p class="card-text"><strong>Год публикации:</strong> {{.Book.PublicationYear}}</p>
                                 <p class="card-text"><strong>Жанр:</strong> {{.Book.Genre}}</p>
                                 <p class="card-text"><strong>Описание:</strong> {{.Book.Description}}</p>
-                                <a href="/static/vendor/pdf/{{.Book.Title}}.pdf">Получить PDF</a>
+                                {{ if .IsAuthenticated }}
+                                    <a href="/pdf/{{.Book.ID}}">Получить PDF</a>
+                                {{else}}
+                                    <a href="/login" class="btn btn-primary">Прежде чем получить pdf, необходимо аутентифицироваться!</a>
+                                {{end}}
                             </div>
-                            <a href="/books/edit/{{.Book.ID}}" class="btn btn-primary">Изменить</a>
-                            <button class="btn btn-danger delete-btn" data-book-id="{{.ID}}">Удалить</button>
+                            {{ if eq .Access_level  1 }}
+                                <a href="/books/edit/{{.Book.ID}}" class="btn btn-primary">Изменить</a>
+                                <button class="btn btn-danger delete-btn" data-book-id="{{.ID}}">Удалить</button>
+                            {{end}}
                         </div>
                     </div>
                 </div>

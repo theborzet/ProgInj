@@ -15,7 +15,7 @@ func (h *Handler) SignInUser(c *fiber.Ctx) error {
 	// Получаем пользователя из базы данных
 	username := c.FormValue("username")
 	password := c.FormValue("password")
-	user, err := h.repo.GetPass(username)
+	user, err := h.repo.GetUser(username)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}

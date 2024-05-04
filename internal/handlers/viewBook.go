@@ -8,6 +8,22 @@ import (
 )
 
 func (h Handler) ViewBookId(c *fiber.Ctx) error {
+	sess, err := h.session.Get(c)
+	if err != nil {
+		return err
+	}
+	isAuthenticated, ok := sess.Get("isAuthenticated").(bool)
+	if !ok {
+		isAuthenticated = false
+	}
+	userID, ok := sess.Get("uID").(int)
+	if !ok {
+		userID = 0
+	}
+	access_level, ok := sess.Get("acessLevel").(int)
+	if !ok {
+		userID = 0
+	}
 	id := c.Params("id")
 	bookId, err := strconv.Atoi(id)
 	if err != nil {
@@ -26,7 +42,10 @@ func (h Handler) ViewBookId(c *fiber.Ctx) error {
 	}
 
 	return c.Render("book_detail", fiber.Map{
-		"Book":   book,
-		"Author": author,
+		"ClientId":        userID,
+		"Book":            book,
+		"Author":          author,
+		"IsAuthenticated": isAuthenticated,
+		"Access_level":    access_level,
 	})
 }

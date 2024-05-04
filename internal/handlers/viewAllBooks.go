@@ -12,6 +12,22 @@ func (h Handler) ViewAllBooks(c *fiber.Ctx) error {
 	if err != nil || page < 1 {
 		page = 1
 	}
+	sess, err := h.session.Get(c)
+	if err != nil {
+		return err
+	}
+	isAuthenticated, ok := sess.Get("isAuthenticated").(bool)
+	if !ok {
+		isAuthenticated = false
+	}
+	userID, ok := sess.Get("uID").(int)
+	if !ok {
+		userID = 0
+	}
+	access_level, ok := sess.Get("acessLevel").(int)
+	if !ok {
+		userID = 0
+	}
 
 	title := c.FormValue("search")
 	genre := c.FormValue("genre")
@@ -38,11 +54,14 @@ func (h Handler) ViewAllBooks(c *fiber.Ctx) error {
 	}
 
 	return c.Render("book_list", fiber.Map{
-		"Books":       paginatedBooks,
-		"Paginator":   paginator,
-		"Title":       "Список книг",
-		"IsPaginated": paginator.TotalPages > 1,
-		"Authors":     authors,
-		"Genres":      genres,
+		"ClientId":        userID,
+		"Books":           paginatedBooks,
+		"Paginator":       paginator,
+		"Title":           "Список книг",
+		"IsPaginated":     paginator.TotalPages > 1,
+		"Authors":         authors,
+		"Genres":          genres,
+		"IsAuthenticated": isAuthenticated,
+		"Access_level":    access_level,
 	})
 }

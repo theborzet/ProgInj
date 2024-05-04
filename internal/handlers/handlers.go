@@ -22,25 +22,6 @@ func NewHandler(repo repository.Repository, session *session.Store) *Handler {
 	}
 }
 
-func (h *Handler) IndexView(c *fiber.Ctx) error {
-	// Получаем сессию из контекста
-	sess, err := h.session.Get(c)
-	if err != nil {
-		return err
-	}
-
-	// Получаем значение "isAuthenticated" из сессии
-	isAuthenticated, ok := sess.Get("isAuthenticated").(bool)
-	if !ok {
-		isAuthenticated = false
-	}
-
-	// Рендеринг шаблона index.tmpl с передачей значения isAuthenticated
-	return c.Render("index", fiber.Map{
-		"isAuthenticated": isAuthenticated,
-	})
-}
-
 func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	// Создание новой сессии
 	sess := session.New(session.Config{
@@ -119,13 +100,6 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 		})
 	})
 
-	clientRoutes := app.Group("/client")
-	clientRoutes.Post("/", handler.AddClient)
-	clientRoutes.Delete("/:id", handler.DeleteClient)
-	clientRoutes.Get("/", handler.ViewAllClients)
-	clientRoutes.Get("/:id", handler.ViewClientId)
-	clientRoutes.Put("/:id", handler.UpdateClient)
-
 	app.Get("/registration", func(c *fiber.Ctx) error {
 		return c.Render("sign_up", nil)
 	})
@@ -137,4 +111,6 @@ func RegistrationRoutess(app *fiber.App, db *sqlx.DB) {
 	app.Get("/logout", handler.LogoutUser)
 
 	app.Get("/profile/:id", handler.ViewClientBooks)
+
+	app.Get("/pdf/:id", handler.GetPdfBook)
 }

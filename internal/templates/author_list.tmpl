@@ -34,7 +34,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li>
-                                <a class="dropdown-item" href="/profile/{{ .user.id }}">Профиль</a>
+                                <a class="dropdown-item" href="/profile/{{ .ClientId }}">Профиль</a>
                             </li>
                             <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
                             {{ if or .user.is_superuser .user.is_staff }}
@@ -54,7 +54,7 @@
                     </li>
                     {{ else }}
                     <li class="nav-item">
-                        <a class="nav-link" href="/registration">Войти <i class="fas fa-sign-in-alt"></i></a>
+                        <a class="nav-link" href="/login">Войти <i class="fas fa-sign-in-alt"></i></a>
                     </li>
                     {{ end }}
                 </ul>
@@ -69,27 +69,45 @@
                     <input type="text" class="form-control mr-2" id="fullname" name="fullname" placeholder="Введите имя автора">
                     <button type="submit" class="btn btn-primary">Поиск</button>
                 </form>
+                {{ if eq .Access_level  1 }}
                 <a href="/authors/add" class="btn btn-success">Добавить автора</a>
+                {{end}}
             </div>
         </div>
         <div class="row">
             {{if .Authors}}
-                {{range .Authors}}
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card h-100 book-card">
-                        <a href="#">
-                            <img class="card-img-top" src="{{.ImageUrl}}" alt="">
-                        </a>
-                        <div class="card-body">
-                            <h4 class="card-title">
-                                <a href="/authors/{{.ID}}">{{.FirstName}} {{.LastName}}</a>
-                            </h4>
+                {{ if eq .Access_level  1 }}
+                    {{range .Authors}}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="card h-100 book-card">
+                            <a href="#">
+                                <img class="card-img-top" src="{{.ImageUrl}}" alt="">
+                            </a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a href="/authors/{{.ID}}">{{.FirstName}} {{.LastName}}</a>
+                                </h4>
+                            </div>
+                            <a href="/authors/edit/{{.ID}}" class="btn btn-primary">Изменить</a>
+                            <button class="btn btn-danger delete-btn" data-author-id="{{.ID}}">Удалить</button>
                         </div>
-                        <a href="/authors/edit/{{.ID}}" class="btn btn-primary">Изменить</a>
-                        <button class="btn btn-danger delete-btn" data-author-id="{{.ID}}">Удалить</button>
-                        
                     </div>
-                </div>
+                    {{end}}
+                {{else}}
+                    {{range .Authors}}
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                        <div class="card h-100 book-card">
+                            <a href="#">
+                                <img class="card-img-top" src="{{.ImageUrl}}" alt="">
+                            </a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                    <a href="/authors/{{.ID}}">{{.FirstName}} {{.LastName}}</a>
+                                </h4>
+                            </div>                            
+                        </div>
+                    </div>
+                    {{end}}
                 {{end}}
             {{else}}
                 <div class="col-md-12">

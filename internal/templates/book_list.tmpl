@@ -36,7 +36,6 @@
                             <li>
                                 <a class="dropdown-item" href="/profile/{{ .ClientId }}">Профиль</a>
                             </li>
-                            <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
                             {{ if or .user.is_superuser .user.is_staff }}
                             <li>
                                 <a class="dropdown-item" href="/admin">Админ-панель</a>

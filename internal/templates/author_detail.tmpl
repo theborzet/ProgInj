@@ -50,7 +50,6 @@
                             <li>
                                 <a class="dropdown-item" href="/profile/{{ .ClientId }}">Профиль</a>
                             </li>
-                            <li><a class="dropdown-item" href="orders/orders.html">Заказы</a></li>
                             {{ if or .user.is_superuser .user.is_staff }}
                             <li>
                                 <a class="dropdown-item" href="/admin">Админ-панель</a>
@@ -68,7 +67,7 @@
                     </li>
                     {{ else }}
                     <li class="nav-item">
-                        <a class="nav-link" href="/registration">Войти <i class="fas fa-sign-in-alt"></i></a>
+                        <a class="nav-link" href="/login">Войти <i class="fas fa-sign-in-alt"></i></a>
                     </li>
                     {{ end }}
                 </ul>
@@ -93,8 +92,8 @@
                                 <!-- Добавьте здесь другие поля, которые вы хотите отображать для автора -->
                             </div>
                             {{ if eq .Access_level  1 }}
-                            <a href="/authors/edit/{{.Author.ID}}" class="btn btn-primary">Изменить</a>
-                            <button class="btn btn-danger delete-btn" data-author-id="{{.ID}}">Удалить</button>
+                                <a href="/authors/edit/{{.Author.ID}}" class="btn btn-primary">Изменить</a>
+                                <button class="btn btn-danger delete-btn" data-author-id="{{.ID}}">Удалить</button>
                             {{end}}
                         </div>
                     </div>
